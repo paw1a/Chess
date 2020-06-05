@@ -9,4 +9,4 @@ Default implementation of famous chess game. You can play with yourself, your fr
 You can find .jar file in the PROJECT folder
 
 ## Preview
-![Alt text](PROJECT/preview.png)
+![Alt text](PROJECT/preview.PNG)
