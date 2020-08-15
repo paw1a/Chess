@@ -1,30 +1,20 @@
-package com.example.chess;
+package com.example.chess.player;
 
 import com.example.chess.figures.Figure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Player {
 
-    private Team team;
-    private List<Figure> figures;
+    private final Team team;
+    private final CopyOnWriteArrayList<Figure> figures;
     private Player opponent;
-
-    private boolean isCheck;
 
     public Player(Team team) {
         this.team = team;
-        figures = new ArrayList<>();
-        isCheck = false;
-    }
-
-    public boolean update() {
-        return true;
-    }
-
-    private boolean isCheck() {
-        return isCheck;
+        figures = new CopyOnWriteArrayList<>();
     }
 
     public Team getTeam() {

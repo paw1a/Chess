@@ -1,6 +1,10 @@
 package com.example.chess;
 
 import com.example.chess.figures.Figure;
+import com.example.chess.player.AIController;
+import com.example.chess.player.Move;
+import com.example.chess.player.Player;
+import com.example.chess.player.Team;
 import com.example.chess.screens.GameOverScreen;
 import org.game.framework.util.Game;
 
@@ -10,13 +14,17 @@ import java.util.List;
 
 public class GameManager {
 
-    private Board board;
+    private final Board board;
     public Cell activeCell;
-    private Cell[][] cells;
-    private MoveController controller;
+    private final Cell[][] cells;
+    private final MoveController controller;
+    private final AIController aiController;
 
     public Player currentPlayer;
-    private Player player, opponent;
+    private final Player player;
+    private final Player opponent;
+
+    private int gameOverTimer;
 
     public GameManager(Team playerTeam) {
         player = new Player(playerTeam);
@@ -31,26 +39,39 @@ public class GameManager {
 
         activeCell = null;
         currentPlayer = player;
+
+        aiController = new AIController(this, playerTeam);
+
+        gameOverTimer = 0;
     }
 
     public void update() {
-        if(activeCell != null && Game.input.isMouseDown(MouseEvent.BUTTON1)) {
-            int x = Game.input.getMouseX();
-            int y = Game.input.getMouseY();
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    if(cells[i][j].getRect().contains(new Point(x, y))) {
-                        List<Cell> list = controller.filterByCheck(
-                                currentPlayer, activeCell.getFigure().getAvailableCells(), activeCell);
-                        if(list.contains(cells[i][j])) {
-                            controller.move(activeCell, cells[i][j], currentPlayer);
-                            currentPlayer = getOpponent(currentPlayer);
-                            activeCell = null;
+        //Обработка хода активного игрока
+        if(currentPlayer.equals(player)) {
+            if (activeCell != null && Game.input.isMouseDown(MouseEvent.BUTTON1)) {
+                int x = Game.input.getMouseX();
+                int y = Game.input.getMouseY();
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        if (cells[i][j].getRect().contains(new Point(x, y))) {
+                            List<Cell> list = controller.filterByCheck(
+                                    currentPlayer, activeCell.getFigure().getAvailableCells(), activeCell);
+                            if (list.contains(cells[i][j])) {
+                                controller.move(activeCell, cells[i][j], currentPlayer);
+                                currentPlayer = getOpponent(currentPlayer);
+                                activeCell = null;
+                            }
                         }
                     }
                 }
             }
+        } else {
+            Move move = aiController.getMove(currentPlayer);
+            controller.move(move.from, move.to, currentPlayer);
+            currentPlayer = getOpponent(currentPlayer);
         }
+
+        //Проверка на шах
         List<Figure> list = currentPlayer.getFigures();
         boolean b = true;
         for (int i = 0; i < list.size(); i++) {
@@ -61,7 +82,8 @@ public class GameManager {
                 break;
             }
         }
-        if(b) Game.application.setScreen(
+        if(b) gameOverTimer++;
+        if(gameOverTimer == 300) Game.application.setScreen(
                 new GameOverScreen(currentPlayer.equals(player) ? "2" : "1"));
     }
 
@@ -93,6 +115,10 @@ public class GameManager {
 
     public Board getBoard() {
         return board;
+    }
+
+    public MoveController getController() {
+        return controller;
     }
 
     public Player getOpponent(Player player) {

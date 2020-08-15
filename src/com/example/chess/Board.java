@@ -1,14 +1,17 @@
 package com.example.chess;
 
 import com.example.chess.figures.*;
+import com.example.chess.player.Player;
+import com.example.chess.player.Team;
 
 import java.awt.*;
 
 public class Board {
 
-    private Cell[][] cells;
+    private final Cell[][] cells;
 
-    private Player player, opponent;
+    private final Player player;
+    private final Player opponent;
     private GameManager manager;
 
     public Board(Player player, Player opponent, GameManager manager) {

@@ -2,12 +2,13 @@ package com.example.chess;
 
 import com.example.chess.figures.Figure;
 import com.example.chess.figures.King;
+import com.example.chess.player.Player;
 
 import java.util.List;
 
 public class MoveController {
 
-    private GameManager manager;
+    private final GameManager manager;
 
     public MoveController(GameManager manager) {
         this.manager = manager;

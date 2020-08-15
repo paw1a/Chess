@@ -1,7 +1,7 @@
 package com.example.chess.figures;
 
 import com.example.chess.Cell;
-import com.example.chess.Team;
+import com.example.chess.player.Team;
 
 import java.util.ArrayList;
 import java.util.List;

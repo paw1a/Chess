@@ -2,7 +2,7 @@ package com.example.chess.screens;
 
 import com.example.chess.Board;
 import com.example.chess.GameManager;
-import com.example.chess.Team;
+import com.example.chess.player.Team;
 import org.game.framework.Screen;
 import org.game.framework.util.Game;
 

@@ -1,7 +1,7 @@
 package com.example.chess.figures;
 
 import com.example.chess.Cell;
-import com.example.chess.Team;
+import com.example.chess.player.Team;
 import org.game.framework.util.Game;
 
 import java.awt.image.BufferedImage;
@@ -14,7 +14,7 @@ public abstract class Figure {
     protected Team team;
     protected Cell[][] cells;
 
-    protected static BufferedImage tileset = Game.files.loadImage("/tileset4.png");
+    protected BufferedImage tileset = Game.files.loadImage("/tileset4.png");
 
     public Figure(Team team, Cell[][] cells) {
         this.team = team;
