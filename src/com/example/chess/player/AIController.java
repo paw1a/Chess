@@ -25,26 +25,12 @@ public class AIController {
     }
 
     public Move getMove(Player player) {
-        movesCount = 0;
         return rootMinimax(4, player);
     }
 
-    private Move getRandomMove(Player player) {
-        Random random = new Random();
-        Figure figure;
-        List<Cell> list;
-        do {
-            figure = player.getFigures().get(random.nextInt(player.getFigures().size()));
-            list = moveController.filterByCheck(player,
-                    figure.getAvailableCells(), moveController.findCellByFigure(figure, cells));
-        } while (list.isEmpty());
-
-        Cell cell = list.get(random.nextInt(list.size()));
-
-        return new Move(moveController.findCellByFigure(figure, cells), cell, player);
-    }
-
     private Move rootMinimax(int level, Player player) {
+        movesCount = 0;
+
         Move bestMove = null;
         int bestValue = Integer.MIN_VALUE;
 
@@ -57,7 +43,7 @@ public class AIController {
                 int index = manager.getOpponent(player).getFigures().indexOf(tempFigure);
 
                 moveController.move(move.from, move.to, move.player);
-                int value = minimax(level-1, false, manager.getOpponent(player));
+                int value = minimax(level-1, Integer.MIN_VALUE, Integer.MAX_VALUE, false, manager.getOpponent(player));
                 if(value > bestValue) {
                     bestValue = value;
                     bestMove = move;
@@ -72,7 +58,7 @@ public class AIController {
         return bestMove;
     }
 
-    private int minimax(int level, boolean isMaximizer, Player player) {
+    private int minimax(int level, int alpha, int beta, boolean isMaximizer, Player player) {
         if(level == 0) {
             if(isMaximizer) return evaluationFunction(player);
             else return evaluationFunction(manager.getOpponent(player));
@@ -81,7 +67,11 @@ public class AIController {
         int minmax = isMaximizer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         Player opponent = manager.getOpponent(player);
 
+        boolean alphaBetaCut = false;
         for(Figure figure : player.getFigures()) {
+            //Отсечение
+            if(alphaBetaCut) break;
+
             for(Cell cell : moveController.filterByCheck(player,
                     figure.getAvailableCells(), moveController.findCellByFigure(figure, cells))) {
                 Move move = new Move(moveController.findCellByFigure(figure, cells), cell, player);
@@ -91,8 +81,14 @@ public class AIController {
                 int index = opponent.getFigures().indexOf(tempFigure);
 
                 moveController.move(move.from, move.to, move.player);
-                if(isMaximizer) minmax = Math.max(minimax(level-1, false, opponent), minmax);
-                else minmax = Math.min(minimax(level-1, true, opponent), minmax);
+                if(isMaximizer) {
+                    minmax = Math.max(minimax(level-1, alpha, beta, false, opponent), minmax);
+                    alpha = Math.max(alpha, minmax);
+                } else {
+                    minmax = Math.min(minimax(level-1, alpha, beta, true, opponent), minmax);
+                    beta = Math.min(beta, minmax);
+                }
+                if(beta <= alpha) alphaBetaCut = true;
                 moveController.move(move.to, move.from, move.player);
 
                 //озвращаем съеденную фигуру
@@ -133,7 +129,23 @@ public class AIController {
                 }
             }
         }
+        if(moveController.isCheck(manager.getOpponent(player))) sum += 20000;
         return sum;
+    }
+
+    private Move getRandomMove(Player player) {
+        Random random = new Random();
+        Figure figure;
+        List<Cell> list;
+        do {
+            figure = player.getFigures().get(random.nextInt(player.getFigures().size()));
+            list = moveController.filterByCheck(player,
+                    figure.getAvailableCells(), moveController.findCellByFigure(figure, cells));
+        } while (list.isEmpty());
+
+        Cell cell = list.get(random.nextInt(list.size()));
+
+        return new Move(moveController.findCellByFigure(figure, cells), cell, player);
     }
 
 }
