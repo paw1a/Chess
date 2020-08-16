@@ -1,6 +1,7 @@
 package com.example.chess;
 
 import com.example.chess.screens.GameScreen;
+import com.example.chess.screens.MenuScreen;
 import org.game.framework.Application;
 import org.game.framework.util.Configuration;
 
@@ -12,6 +13,6 @@ public class Launcher {
         config.setHeight(900);
         config.setShowFPS(false);
         config.setTitle("Chess");
-        new Application(config).setScreen(new GameScreen());
+        new Application(config).setScreen(new MenuScreen());
     }
 }

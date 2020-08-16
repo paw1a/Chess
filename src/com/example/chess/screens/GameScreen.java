@@ -14,24 +14,20 @@ public class GameScreen implements Screen {
     private Board board;
     private GameManager manager;
 
+    private final int gameMode;
+
+    public GameScreen(int gameMode) {
+        this.gameMode = gameMode;
+    }
+
     @Override
     public void create() {
-        manager = new GameManager(Team.WHITE);
+        manager = new GameManager(gameMode);
         board = manager.getBoard();
     }
 
     @Override
     public void update() {
-        //Input handling
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if(board.getCells()[i][j].getRect().contains(
-                        new Point(Game.input.getMouseX(), Game.input.getMouseY()))
-                        && Game.input.isMouseDown(MouseEvent.BUTTON1))
-                    if(manager.currentPlayer.getFigures().contains(
-                            board.getCells()[i][j].getFigure())) manager.activeCell = board.getCells()[i][j];
-            }
-        }
         manager.update();
     }
 

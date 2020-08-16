@@ -1,6 +1,11 @@
 package com.example.chess;
 
 public class Utils {
+
+    public static final int SINGLE_PLAYER_MODE = 1;
+    public static final int MULTIPLAYER_MODE = 2;
+    public static final int PC_FIGHT_MODE = 3;
+
     public static final int PAWN = 100;
     public static final int KNIGHT = 320;
     public static final int BISHOP = 330;

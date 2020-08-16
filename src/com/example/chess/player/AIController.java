@@ -14,14 +14,12 @@ public class AIController {
     private final GameManager manager;
     private final Cell[][] cells;
     private final MoveController moveController;
-    private final Team leadPlayerTeam;
     private int movesCount;
 
-    public AIController(GameManager manager, Team leadPlayerTeam) {
+    public AIController(GameManager manager) {
         this.manager = manager;
         this.cells = manager.getBoard().getCells();
         this.moveController = manager.getController();
-        this.leadPlayerTeam = leadPlayerTeam;
     }
 
     public Move getMove(Player player) {
@@ -91,7 +89,7 @@ public class AIController {
                 if(beta <= alpha) alphaBetaCut = true;
                 moveController.move(move.to, move.from, move.player);
 
-                //озвращаем съеденную фигуру
+                //Возвращаем съеденную фигуру
                 if(index != -1) opponent.getFigures().add(index, tempFigure);
                 move.to.setFigure(tempFigure);
             }
@@ -133,7 +131,7 @@ public class AIController {
         return sum;
     }
 
-    private Move getRandomMove(Player player) {
+    public Move getRandomMove(Player player) {
         Random random = new Random();
         Figure figure;
         List<Cell> list;
